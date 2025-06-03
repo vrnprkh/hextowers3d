@@ -64,34 +64,49 @@ export default function Hexagon({ ...props }: HexagonProps) {
         e.stopPropagation();
       }}
     >
-      <extrudeGeometry
-        args={[
-          hexShape,
-          {
-            curveSegments: 1,
-            bevelSegments: 16,
-            bevelSize: bevelWidth,
-            depth: tileData.height / 2,
-          },
-        ]}
-      />
-      <meshStandardMaterial
-        key={hovered ? "hovered" : "normal"}
-        color={hovered ? "#e69f65" : "#ecba85"}
-      />
+      {/* base */}
+      <mesh>
+        <extrudeGeometry
+          args={[
+            hexShape,
+            {
+              curveSegments: 1,
+              bevelSegments: 16,
+              bevelSize: bevelWidth,
+              depth: tileData.height / 2,
+            },
+          ]}
+        />
+        <meshStandardMaterial
+          key={hovered ? "hovered" : "normal"}
+          color={hovered ? "#e69f65" : "#ecba85"}
+        />
+      </mesh>
 
       {/* text */}
       {tileData.target !== -1 && (
-        <Text
-          position={[0, 0, tileData.height / 2 + 0.25]}
-          fontSize={0.4}
-          color="white"
-          anchorX="center"
-          anchorY="middle"
-          raycast={() => null}
-        >
-          {tileData.target}
-        </Text>
+        <>
+          <Text
+            position={[0, 0, tileData.height / 2 + 0.25]}
+            fontSize={0.5}
+            color="white"
+            anchorX="center"
+            anchorY="middle"
+            raycast={() => null}
+          >
+            {tileData.target}
+          </Text>
+          <Text
+            position={[0, -0.2, tileData.height / 2 + 0.25]}
+            fontSize={0.5}
+            color="white"
+            anchorX="center"
+            anchorY="middle"
+            raycast={() => null}
+          >
+            {Array(tileData.height).fill(".")}
+          </Text>
+        </>
       )}
     </mesh>
   );

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
 import Hexgrid from "../components/Hexgrid";
-import { OrbitControls, OrthographicCamera, PerspectiveCamera } from "@react-three/drei";
+import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import { useDispatch } from "react-redux";
 import { load } from "../features/levelSlice";
 import { levels } from "../data/data";
@@ -36,7 +36,7 @@ export default function GameScene() {
 
       <OrbitControls
         enablePan={false}
-        minPolarAngle={Math.PI / 16}
+        minPolarAngle={0}
         maxPolarAngle={(3 * Math.PI) / 8}
         minDistance={12}
         maxDistance={20}
