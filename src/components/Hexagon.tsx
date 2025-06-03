@@ -68,7 +68,6 @@ export default function Hexagon({ ...props }: HexagonProps) {
         e.stopPropagation();
       }}
     >
-      {/* base */}
       <mesh castShadow={true} receiveShadow={true}>
         <extrudeGeometry
           args={[
@@ -80,15 +79,28 @@ export default function Hexagon({ ...props }: HexagonProps) {
               depth: tileData.height / 2,
             },
           ]}
-        ></extrudeGeometry>
+        />
         <meshStandardMaterial
+          attach="material-0"
           key={
             hovered ? "hovered" : tileData.indicator ? "indicator" : "normal"
           }
           color={
-            hovered ? "#e69f65" : tileData.indicator ? "#c76d44" : "#ecba85"
+            hovered ? "#e69f65" : tileData.indicator ? "#d98957" : "#ecba85"
           }
         />
+        <meshStandardMaterial
+          attach="material-1"
+          key={
+            hovered ? "hovered" : tileData.indicator ? "indicator" : "normal"
+          }
+          color={
+            hovered ? "#cc8d5a" : tileData.indicator ? "#bf784d" : "#d4a777"
+          }
+        />
+
+
+
       </mesh>
       {/* text */}
       {tileData.target !== -1 && (
