@@ -65,7 +65,7 @@ export default function Hexagon({ ...props }: HexagonProps) {
       }}
     >
       {/* base */}
-      <mesh>
+      <mesh castShadow={true} receiveShadow={true}>
         <extrudeGeometry
           args={[
             hexShape,
@@ -76,13 +76,12 @@ export default function Hexagon({ ...props }: HexagonProps) {
               depth: tileData.height / 2,
             },
           ]}
-        />
+        ></extrudeGeometry>
         <meshStandardMaterial
           key={hovered ? "hovered" : "normal"}
           color={hovered ? "#e69f65" : "#ecba85"}
         />
       </mesh>
-
       {/* text */}
       {tileData.target !== -1 && (
         <>

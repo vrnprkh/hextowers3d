@@ -10,6 +10,7 @@ type tileMap = {
     sees: number;
     target: number;
     height: number;
+		indicator : boolean;
   };
 };
 
@@ -74,6 +75,7 @@ export const levelSlice = createSlice({
           sees: 0,
           target: 0,
           height: hex.height,
+					indicator : false,
         };
         state.indexes.push([hex.at[0], hex.at[1]]);
       });
@@ -101,6 +103,7 @@ export const levelSlice = createSlice({
       // takes in a index
       state.tiles[action.payload].height =
         (state.tiles[action.payload].height + 1) % (state.numRange + 1);
+      levelSlice.caseReducers.updateSees(state);
     },
     decrementHeight: (state, action: PayloadAction<string>) => {
       // takes in a index
@@ -108,6 +111,18 @@ export const levelSlice = createSlice({
         state.tiles[action.payload].height - 1,
         state.numRange + 1
       );
+      levelSlice.caseReducers.updateSees(state);
+    },
+    updateSees: (state) => {
+      state.indexes.forEach((element) => {
+        const q = element[0];
+        const r = element[1];
+        const index = `${q}-${r}`;
+        if (state.tiles[index].height == 0) {
+          return;
+        }
+        state.tiles[index].sees = computeSeen(q, r, state);
+      });
     },
   },
 });
@@ -119,4 +134,5 @@ export default levelSlice.reducer;
 
 export const selectIndexes = (state: RootState) => state.level.indexes;
 export const selectTiles = (state: RootState) => state.level.tiles;
-export const selectTile = (stringId : string) => (state : RootState) => state.level.tiles[stringId];
+export const selectTile = (stringId: string) => (state: RootState) =>
+  state.level.tiles[stringId];

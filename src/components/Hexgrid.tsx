@@ -9,7 +9,6 @@ import { selectIndexes } from "../features/levelSlice";
 let renderCycle = 0;
 function getPrefix() {
   renderCycle++;
-  console.log(renderCycle);
   return `${renderCycle}.`
 }
 

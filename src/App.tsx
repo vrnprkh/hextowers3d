@@ -12,6 +12,8 @@ function App() {
         onContextMenu={(e) => {
           e.preventDefault();
         }}
+        shadows={"soft"}
+        
       >
         <GameScene />
         {/* <axesHelper scale={10}></axesHelper> */}

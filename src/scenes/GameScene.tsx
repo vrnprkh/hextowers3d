@@ -14,15 +14,14 @@ export default function GameScene() {
   return (
     <>
       <spotLight
-        angle={0.75}
-        penumbra={0.5}
-        position={[0, 10, 10]}
-        intensity={150}
+        angle={0.2}
+        penumbra={1}
+        position={[10, 10, 20]}
+        intensity={250}
+        castShadow={true}        
       />
       <ambientLight
-        intensity={1}
-
-        
+        intensity={0.75}
       />
       <mesh rotation={[0, 0, 0]}>
         <Hexgrid />
