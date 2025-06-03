@@ -2,7 +2,6 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { LevelData } from "../data/data";
 import { modulo } from "../util/hexagonUtils";
 import type { RootState } from "../app/store";
-
 type tileMap = {
   [key: string]: {
     q: number;
@@ -59,6 +58,56 @@ function computeSeen(q: number, r: number, levelState: LevelState) {
   return seen;
 }
 
+// helpers
+function applyReset(state: LevelState) {
+  state.indexes.forEach((element) => {
+    state.tiles[`${element[0]}-${element[1]}`].height = 0;
+  });
+}
+
+function applySeesUpdates(state: LevelState) {
+  state.indexes.forEach((element) => {
+    const q = element[0];
+    const r = element[1];
+    const index = `${q}-${r}`;
+    if (state.tiles[index].height == 0) {
+      return;
+    }
+    state.tiles[index].sees = computeSeen(q, r, state);
+  });
+}
+function applyHighlightUpdates(state: LevelState) {
+  // clear
+  state.indexes.forEach((index) => {
+    state.tiles[`${index[0]}-${index[1]}`].indicator = false;
+    state.tiles[`${index[0]}-${index[1]}`].hovered = false;
+  });
+
+  state.hovered.forEach((index) => {
+    state.tiles[index].hovered = true;
+
+    if (state.tiles[index].height == 0) {
+      return;
+    }
+    const q = state.tiles[index].q;
+    const r = state.tiles[index].r;
+    const startHeight = state.tiles[index].height;
+    offsets.forEach((offset) => {
+      let qn = q + offset[0];
+      let rn = r + offset[1];
+
+      while (`${qn}-${rn}` in state.tiles) {
+        if (state.tiles[`${qn}-${rn}`].height > startHeight) {
+          state.tiles[`${qn}-${rn}`].indicator = true;
+          return;
+        }
+        qn += offset[0];
+        rn += offset[1];
+      }
+    });
+  });
+}
+
 export const levelSlice = createSlice({
   name: "level",
   initialState,
@@ -96,18 +145,18 @@ export const levelSlice = createSlice({
         state.tiles[index].target = computeSeen(q, r, state);
       });
       // reset heights
-      levelSlice.caseReducers.reset(state);
+
+      applyReset(state);
     },
     reset: (state) => {
-      state.indexes.forEach((element) => {
-        state.tiles[`${element[0]}-${element[1]}`].height = 0;
-      });
+      applyReset(state);
     },
     incrementHeight: (state, action: PayloadAction<string>) => {
       // takes in a index
       state.tiles[action.payload].height =
         (state.tiles[action.payload].height + 1) % (state.numRange + 1);
-      levelSlice.caseReducers.updateSees(state);
+      applySeesUpdates(state);
+      applyHighlightUpdates(state);
     },
     decrementHeight: (state, action: PayloadAction<string>) => {
       // takes in a index
@@ -115,64 +164,21 @@ export const levelSlice = createSlice({
         state.tiles[action.payload].height - 1,
         state.numRange + 1
       );
-      levelSlice.caseReducers.updateSees(state);
-    },
-    updateSees: (state) => {
-      state.indexes.forEach((element) => {
-        const q = element[0];
-        const r = element[1];
-        const index = `${q}-${r}`;
-        if (state.tiles[index].height == 0) {
-          return;
-        }
-        state.tiles[index].sees = computeSeen(q, r, state);
-      });
-      levelSlice.caseReducers.highlightSees(state);
+      applySeesUpdates(state);
+      applyHighlightUpdates(state);
     },
 
     addHover: (state, action: PayloadAction<string>) => {
       if (!state.hovered.includes(action.payload)) {
         state.hovered.push(action.payload);
       }
-      levelSlice.caseReducers.highlightSees(state);
+      applyHighlightUpdates(state);
     },
     removeHover: (state, action: PayloadAction<string>) => {
       if (state.hovered.includes(action.payload)) {
         state.hovered = state.hovered.filter((e) => e !== action.payload);
       }
-      levelSlice.caseReducers.highlightSees(state);
-    },
-
-    highlightSees: (state) => {
-      // clear
-      state.indexes.forEach((index) => {
-        state.tiles[`${index[0]}-${index[1]}`].indicator = false;
-        state.tiles[`${index[0]}-${index[1]}`].hovered = false;
-      });
-
-      state.hovered.forEach((index) => {
-        state.tiles[index].hovered = true;
-
-        if (state.tiles[index].height == 0) {
-          return;
-        }
-        const q = state.tiles[index].q;
-        const r = state.tiles[index].r;
-        const startHeight = state.tiles[index].height;
-        offsets.forEach((offset) => {
-          let qn = q + offset[0];
-          let rn = r + offset[1];
-
-          while (`${qn}-${rn}` in state.tiles) {
-            if (state.tiles[`${qn}-${rn}`].height > startHeight) {
-              state.tiles[`${qn}-${rn}`].indicator = true;
-              return;
-            }
-            qn += offset[0];
-            rn += offset[1];
-          }
-        });
-      });
+      applyHighlightUpdates(state);
     },
   },
 });
