@@ -2,18 +2,24 @@ import { useMemo, useState } from "react";
 import { Shape } from "three";
 import type { ThreeElements } from "@react-three/fiber";
 import { Text } from "@react-three/drei";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  decrementHeight,
+  incrementHeight,
+  selectTile,
+} from "../features/levelSlice";
 
 type HexagonProps = ThreeElements["mesh"] & {
-  height?: number;
-  number?: number;
+  coords: [number, number];
 };
 
 export default function Hexagon({ ...props }: HexagonProps) {
-  props.height = props.height ?? 0.5;
-  props.number = props.number ?? 1
   const bevelWidth = 0.1;
   const [hovered, setHover] = useState(false);
-  const [height, setHeight] = useState(props.height);
+  const coordString = `${props.coords[0]}-${props.coords[1]}`;
+  const dispatch = useDispatch();
+  const tileData = useSelector(selectTile(coordString));
+
   const hexShape = useMemo(() => {
     const shape = new Shape();
     const radius = 1 - bevelWidth;
@@ -33,21 +39,28 @@ export default function Hexagon({ ...props }: HexagonProps) {
   return (
     <mesh
       {...props}
-      onPointerOver={(e) => {
-        setHover(true);
+      onPointerEnter={(e) => {
+        if (tileData.target !== -1) {
+          setHover(true);
+        }
         e.stopPropagation();
       }}
-      onPointerOut={(e) => {
-        setHover(false);
+      onPointerLeave={(e) => {
+        if (tileData.target !== -1) {
+          setHover(false);
+        }
         e.stopPropagation();
       }}
       onClick={(e) => {
-        setHeight(((height - 0.25 + 0.5) % 2.5) + 0.25);
+        if (tileData.target !== -1) {
+          dispatch(incrementHeight(coordString));
+        }
         e.stopPropagation();
       }}
       onContextMenu={(e) => {
-        const val = ((height - 0.25 - 0.5) % 2.5) + 0.25;
-        setHeight(val < 0.25 ? 2.25 : val);
+        if (tileData.target !== -1) {
+          dispatch(decrementHeight(coordString));
+        }
         e.stopPropagation();
       }}
     >
@@ -58,23 +71,28 @@ export default function Hexagon({ ...props }: HexagonProps) {
             curveSegments: 1,
             bevelSegments: 16,
             bevelSize: bevelWidth,
-            depth: height,
+            depth: tileData.height / 2,
           },
         ]}
       />
-      <meshStandardMaterial color={hovered ? "#e69f65" : "#ecba85"} />
+      <meshStandardMaterial
+        key={hovered ? "hovered" : "normal"}
+        color={hovered ? "#e69f65" : "#ecba85"}
+      />
 
       {/* text */}
-
-      <Text
-        position={[0, 0, height + 0.25]}
-        fontSize={0.4}
-        color="white"
-        anchorX="center"
-        anchorY="middle"
-      >
-        {props.number}
-      </Text>
+      {tileData.target !== -1 && (
+        <Text
+          position={[0, 0, tileData.height / 2 + 0.25]}
+          fontSize={0.4}
+          color="white"
+          anchorX="center"
+          anchorY="middle"
+          raycast={() => null}
+        >
+          {tileData.target}
+        </Text>
+      )}
     </mesh>
   );
 }

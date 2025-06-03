@@ -82,7 +82,12 @@ export const levelSlice = createSlice({
       state.indexes.forEach((element) => {
         const q = element[0];
         const r = element[1];
-        state.tiles[`${q}-${r}`].target = computeSeen(q, r, state);
+        const index = `${q}-${r}`;
+        if (state.tiles[index].height == 0) {
+          state.tiles[index].target = -1;
+          return;
+        }
+        state.tiles[index].target = computeSeen(q, r, state);
       });
       // reset heights
       levelSlice.caseReducers.reset(state);
@@ -95,13 +100,13 @@ export const levelSlice = createSlice({
     incrementHeight: (state, action: PayloadAction<string>) => {
       // takes in a index
       state.tiles[action.payload].height =
-        (state.tiles[action.payload].height + 1) % state.numRange;
+        (state.tiles[action.payload].height + 1) % (state.numRange + 1);
     },
     decrementHeight: (state, action: PayloadAction<string>) => {
       // takes in a index
       state.tiles[action.payload].height = modulo(
         state.tiles[action.payload].height - 1,
-        state.numRange
+        state.numRange + 1
       );
     },
   },
@@ -112,8 +117,6 @@ export const { load, reset, incrementHeight, decrementHeight } =
 
 export default levelSlice.reducer;
 
-
-export const selectIndexes = (state : RootState) => state.level.indexes;
-export const selectTiles = (state : RootState) => state.level.tiles;
-
-
+export const selectIndexes = (state: RootState) => state.level.indexes;
+export const selectTiles = (state: RootState) => state.level.tiles;
+export const selectTile = (stringId : string) => (state : RootState) => state.level.tiles[stringId];

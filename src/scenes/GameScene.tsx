@@ -1,14 +1,16 @@
-import { useState } from "react";
+import { useEffect } from "react";
 
-import { useFrame } from "@react-three/fiber";
 import Hexgrid from "../components/Hexgrid";
 import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
+import { useDispatch } from "react-redux";
+import { load } from "../features/levelSlice";
+import { levels } from "../data/data";
 
 export default function GameScene() {
-  const [rot, setRot] = useState(0);
-  // const startAngle = Math.PI / 4;
-  useFrame((_, delta) => setRot(rot + delta / 10));
-
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(load(levels[0]));
+  }, []);
   return (
     <>
       <spotLight
@@ -17,7 +19,7 @@ export default function GameScene() {
         position={[0, 0, 8]}
         intensity={100}
       />
-      <mesh rotation={[0, 0, rot]}>
+      <mesh rotation={[0, 0, 0]}>
         <Hexgrid />
       </mesh>
       <PerspectiveCamera

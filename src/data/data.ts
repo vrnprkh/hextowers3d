@@ -7,6 +7,7 @@ export interface LevelData {
   numRange: number;
 }
 export const levels: LevelData[] = [
+	
   {
     size: 3,
     hexes: [
