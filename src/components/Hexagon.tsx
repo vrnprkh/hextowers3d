@@ -83,7 +83,7 @@ export default function Hexagon({ ...props }: HexagonProps) {
         <meshStandardMaterial
           attach="material-0"
           key={
-            hovered ? "hovered" : tileData.indicator ? "indicator" : "normal"
+            "face-" + (hovered ? "hovered" : tileData.indicator ? "indicator" : "normal")
           }
           color={
             hovered ? "#e69f65" : tileData.indicator ? "#d98957" : "#ecba85"
@@ -92,7 +92,7 @@ export default function Hexagon({ ...props }: HexagonProps) {
         <meshStandardMaterial
           attach="material-1"
           key={
-            hovered ? "hovered" : tileData.indicator ? "indicator" : "normal"
+            "side-" +hovered ? "hovered" : tileData.indicator ? "indicator" : "normal"
           }
           color={
             hovered ? "#cc8d5a" : tileData.indicator ? "#bf784d" : "#d4a777"
