@@ -2,14 +2,14 @@ import { useEffect } from "react";
 
 import Hexgrid from "../components/Hexgrid";
 import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
-import { useDispatch } from "react-redux";
-import { load } from "../features/levelSlice";
-import { levels } from "../data/data";
+
+import { useAppDispatch } from "../app/hooks";
+import { startGame } from "../features/UISlice";
 
 export default function GameScene() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(load(levels[0]));
+    dispatch(startGame());
   }, []);
   return (
     <>

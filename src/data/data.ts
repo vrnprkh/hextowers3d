@@ -2,12 +2,37 @@ export interface LevelData {
   size: number;
   hexes: {
     height: number;
-    at: [number, number, number];
+    at: number[];
   }[];
   numRange: number;
 }
 export const levels: LevelData[] = [
-	
+  {
+    size: 2,
+    hexes: [
+      { height: 1, at: [0, 0, 0] },
+      { height: 2, at: [0, -1, 1] },
+      { height: 0, at: [0, 1, -1]},
+      { height: 0, at: [1, -1, 0]},
+      { height: 0, at: [1, 0, -1]},
+      { height: 0, at: [-1, 0, 1]},
+      { height: 0, at: [-1, 1, 0]},
+    ],
+    numRange: 4,
+  },
+  {
+    size: 2,
+    hexes: [
+      { height: 0, at: [-1, 0, 1] },
+      { height: 1, at: [-1, 1, 0] },
+      { height: 3, at: [0, -1, 1] },
+      { height: 0, at: [0, 0, 0] },
+      { height: 4, at: [0, 1, -1] },
+      { height: 2, at: [1, -1, 0] },
+      { height: 0, at: [1, 0, -1] },
+    ],
+    numRange: 4,
+  },
   {
     size: 3,
     hexes: [

@@ -1,11 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import levelReducer from "../features/levelSlice"
-
+import uiReducer from "../features/UISlice"
 
 
 export const store = configureStore({
 	reducer : {
 		level : levelReducer,
+		ui : uiReducer
 	}
 })
 

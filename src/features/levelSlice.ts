@@ -115,6 +115,7 @@ export const levelSlice = createSlice({
     load: (state, action: PayloadAction<LevelData>) => {
       // clear tiles
       state.tiles = {};
+      state.indexes = [];
 
       state.size = action.payload.size;
       state.numRange = action.payload.numRange;
@@ -132,7 +133,6 @@ export const levelSlice = createSlice({
         };
         state.indexes.push([hex.at[0], hex.at[1]]);
       });
-
       // initialize targets
       state.indexes.forEach((element) => {
         const q = element[0];
@@ -142,10 +142,9 @@ export const levelSlice = createSlice({
           state.tiles[index].target = -1;
           return;
         }
+
         state.tiles[index].target = computeSeen(q, r, state);
       });
-      // reset heights
-
       applyReset(state);
     },
     reset: (state) => {
@@ -198,3 +197,19 @@ export const selectIndexes = (state: RootState) => state.level.indexes;
 export const selectTiles = (state: RootState) => state.level.tiles;
 export const selectTile = (stringId: string) => (state: RootState) =>
   state.level.tiles[stringId];
+
+export const selectWin = (state: RootState) => {
+  return state.level.indexes.every((index) => {
+    const tile = state.level.tiles[`${index[0]}-${index[1]}`];
+    if (tile.target === -1) {
+      return true;
+    }
+    if (tile.height === 0) {
+      return false;
+    }
+    if (tile.target === tile.sees) {
+      return true;
+    }
+    return false;
+  });
+};
