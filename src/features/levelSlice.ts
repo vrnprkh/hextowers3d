@@ -1,4 +1,4 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, Tuple, type PayloadAction } from "@reduxjs/toolkit";
 import type { LevelData } from "../data/data";
 import { modulo } from "../util/hexagonUtils";
 import type { RootState } from "../app/store";
@@ -133,6 +133,31 @@ export const levelSlice = createSlice({
         };
         state.indexes.push([hex.at[0], hex.at[1]]);
       });
+      // generate empty hexes
+      const rangeSize = action.payload.size - 1;
+      for (let q = -rangeSize; q < rangeSize + 1; q++) {
+        const r1 = Math.max(-rangeSize, -q - rangeSize);
+        const r2 = Math.min(rangeSize, -q + rangeSize);
+        for (let r = r1; r < r2 + 1; r++) {
+          const coordString = `${q}-${r}`
+          
+          if (state.indexes.some((e) => `${e[0]}-${e[1]}` === coordString)) {
+            continue;
+          }
+          
+          state.tiles[coordString] = {
+            q : q,
+            r : r,
+            sees: 0,
+            target: 0,
+            height: 0,
+            indicator : false,
+            hovered : false,
+          }
+          state.indexes.push([q, r]);
+        }
+      }
+
       // initialize targets
       state.indexes.forEach((element) => {
         const q = element[0];
