@@ -11,6 +11,7 @@ type tileMap = {
     target: number;
     height: number;
     indicator: boolean;
+    hovered: boolean;
   };
 };
 
@@ -78,6 +79,7 @@ export const levelSlice = createSlice({
           target: 0,
           height: hex.height,
           indicator: false,
+          hovered: false,
         };
         state.indexes.push([hex.at[0], hex.at[1]]);
       });
@@ -125,32 +127,35 @@ export const levelSlice = createSlice({
         }
         state.tiles[index].sees = computeSeen(q, r, state);
       });
-			levelSlice.caseReducers.highlightSees(state);
+      levelSlice.caseReducers.highlightSees(state);
     },
 
-		addHover: (state, action : PayloadAction<string>) => {
-			if (!state.hovered.includes(action.payload)) {
-				state.hovered.push(action.payload);
-			}
-			levelSlice.caseReducers.highlightSees(state);
-		},
-		removeHover : (state, action : PayloadAction<string>) => {
-			if (state.hovered.includes(action.payload)) {
-				state.hovered = state.hovered.filter(e => e !== action.payload);
-			}
-			levelSlice.caseReducers.highlightSees(state);
-		},
+    addHover: (state, action: PayloadAction<string>) => {
+      if (!state.hovered.includes(action.payload)) {
+        state.hovered.push(action.payload);
+      }
+      levelSlice.caseReducers.highlightSees(state);
+    },
+    removeHover: (state, action: PayloadAction<string>) => {
+      if (state.hovered.includes(action.payload)) {
+        state.hovered = state.hovered.filter((e) => e !== action.payload);
+      }
+      levelSlice.caseReducers.highlightSees(state);
+    },
 
     highlightSees: (state) => {
-			// clear
-			state.indexes.forEach((index) => {
-				state.tiles[`${index[0]}-${index[1]}`].indicator = false;
-			})
+      // clear
+      state.indexes.forEach((index) => {
+        state.tiles[`${index[0]}-${index[1]}`].indicator = false;
+        state.tiles[`${index[0]}-${index[1]}`].hovered = false;
+      });
 
       state.hovered.forEach((index) => {
-				if (state.tiles[index].height == 0) {
-					return;
-				}
+        state.tiles[index].hovered = true;
+
+        if (state.tiles[index].height == 0) {
+          return;
+        }
         const q = state.tiles[index].q;
         const r = state.tiles[index].r;
         const startHeight = state.tiles[index].height;
@@ -172,8 +177,14 @@ export const levelSlice = createSlice({
   },
 });
 
-export const { load, reset, incrementHeight, decrementHeight, addHover, removeHover } =
-  levelSlice.actions;
+export const {
+  load,
+  reset,
+  incrementHeight,
+  decrementHeight,
+  addHover,
+  removeHover,
+} = levelSlice.actions;
 
 export default levelSlice.reducer;
 

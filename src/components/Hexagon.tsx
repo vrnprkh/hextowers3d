@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Shape } from "three";
 import type { ThreeElements } from "@react-three/fiber";
 import { Text } from "@react-three/drei";
@@ -17,7 +17,6 @@ type HexagonProps = ThreeElements["mesh"] & {
 
 export default function Hexagon({ ...props }: HexagonProps) {
   const bevelWidth = 0.1;
-  const [hovered, setHover] = useState(false);
   const coordString = `${props.coords[0]}-${props.coords[1]}`;
   const dispatch = useDispatch();
   const tileData = useSelector(selectTile(coordString));
@@ -43,14 +42,12 @@ export default function Hexagon({ ...props }: HexagonProps) {
       {...props}
       onPointerEnter={(e) => {
         if (tileData.target !== -1) {
-          setHover(true);
           dispatch(addHover(coordString));
         }
         e.stopPropagation();
       }}
       onPointerLeave={(e) => {
         if (tileData.target !== -1) {
-          setHover(false);
           dispatch(removeHover(coordString));
         }
         e.stopPropagation();
@@ -83,24 +80,39 @@ export default function Hexagon({ ...props }: HexagonProps) {
         <meshStandardMaterial
           attach="material-0"
           key={
-            "face-" + (hovered ? "hovered" : tileData.indicator ? "indicator" : "normal")
+            "face-" +
+            (tileData.hovered
+              ? "hovered"
+              : tileData.indicator
+              ? "indicator"
+              : "normal")
           }
           color={
-            hovered ? "#e69f65" : tileData.indicator ? "#d98957" : "#ecba85"
+            tileData.hovered
+              ? "#e69f65"
+              : tileData.indicator
+              ? "#d98957"
+              : "#ecba85"
           }
         />
         <meshStandardMaterial
           attach="material-1"
           key={
-            "side-" +(hovered ? "hovered" : tileData.indicator ? "indicator" : "normal")
+            "side-" +
+            (tileData.hovered
+              ? "hovered"
+              : tileData.indicator
+              ? "indicator"
+              : "normal")
           }
           color={
-            hovered ? "#cc8d5a" : tileData.indicator ? "#bf784d" : "#d4a777"
+            tileData.hovered
+              ? "#cc8d5a"
+              : tileData.indicator
+              ? "#bf784d"
+              : "#d4a777"
           }
         />
-
-
-
       </mesh>
       {/* text */}
       {tileData.target !== -1 && (
