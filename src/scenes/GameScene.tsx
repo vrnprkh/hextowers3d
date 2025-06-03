@@ -17,7 +17,7 @@ export default function GameScene() {
         angle={0.2}
         penumbra={1}
         position={[10, 10, 20]}
-        intensity={250}
+        intensity={350}
         castShadow={true}        
       />
       <ambientLight
@@ -32,7 +32,6 @@ export default function GameScene() {
         position={[0, 0, 10]}
         up={[0, 0, 1]}
       />
-
       <OrbitControls
         enablePan={false}
         minPolarAngle={0}

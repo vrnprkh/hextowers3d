@@ -10,7 +10,7 @@ type tileMap = {
     sees: number;
     target: number;
     height: number;
-		indicator : boolean;
+    indicator: boolean;
   };
 };
 
@@ -19,12 +19,14 @@ export interface LevelState {
   indexes: [number, number][];
   tiles: tileMap;
   numRange: number;
+  hovered: string[];
 }
 const initialState: LevelState = {
   size: 0,
   indexes: [],
   tiles: {},
   numRange: 0,
+  hovered: [],
 };
 
 const offsets = [
@@ -75,7 +77,7 @@ export const levelSlice = createSlice({
           sees: 0,
           target: 0,
           height: hex.height,
-					indicator : false,
+          indicator: false,
         };
         state.indexes.push([hex.at[0], hex.at[1]]);
       });
@@ -123,11 +125,54 @@ export const levelSlice = createSlice({
         }
         state.tiles[index].sees = computeSeen(q, r, state);
       });
+			levelSlice.caseReducers.highlightSees(state);
+    },
+
+		addHover: (state, action : PayloadAction<string>) => {
+			if (!state.hovered.includes(action.payload)) {
+				state.hovered.push(action.payload);
+			}
+			levelSlice.caseReducers.highlightSees(state);
+		},
+		removeHover : (state, action : PayloadAction<string>) => {
+			if (state.hovered.includes(action.payload)) {
+				state.hovered = state.hovered.filter(e => e !== action.payload);
+			}
+			levelSlice.caseReducers.highlightSees(state);
+		},
+
+    highlightSees: (state) => {
+			// clear
+			state.indexes.forEach((index) => {
+				state.tiles[`${index[0]}-${index[1]}`].indicator = false;
+			})
+
+      state.hovered.forEach((index) => {
+				if (state.tiles[index].height == 0) {
+					return;
+				}
+        const q = state.tiles[index].q;
+        const r = state.tiles[index].r;
+        const startHeight = state.tiles[index].height;
+        offsets.forEach((offset) => {
+          let qn = q + offset[0];
+          let rn = r + offset[1];
+
+          while (`${qn}-${rn}` in state.tiles) {
+            if (state.tiles[`${qn}-${rn}`].height > startHeight) {
+              state.tiles[`${qn}-${rn}`].indicator = true;
+              return;
+            }
+            qn += offset[0];
+            rn += offset[1];
+          }
+        });
+      });
     },
   },
 });
 
-export const { load, reset, incrementHeight, decrementHeight } =
+export const { load, reset, incrementHeight, decrementHeight, addHover, removeHover } =
   levelSlice.actions;
 
 export default levelSlice.reducer;

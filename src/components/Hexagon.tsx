@@ -4,8 +4,10 @@ import type { ThreeElements } from "@react-three/fiber";
 import { Text } from "@react-three/drei";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  addHover,
   decrementHeight,
   incrementHeight,
+  removeHover,
   selectTile,
 } from "../features/levelSlice";
 
@@ -42,12 +44,14 @@ export default function Hexagon({ ...props }: HexagonProps) {
       onPointerEnter={(e) => {
         if (tileData.target !== -1) {
           setHover(true);
+          dispatch(addHover(coordString));
         }
         e.stopPropagation();
       }}
       onPointerLeave={(e) => {
         if (tileData.target !== -1) {
           setHover(false);
+          dispatch(removeHover(coordString));
         }
         e.stopPropagation();
       }}
@@ -78,8 +82,12 @@ export default function Hexagon({ ...props }: HexagonProps) {
           ]}
         ></extrudeGeometry>
         <meshStandardMaterial
-          key={hovered ? "hovered" : "normal"}
-          color={hovered ? "#e69f65" : "#ecba85"}
+          key={
+            hovered ? "hovered" : tileData.indicator ? "indicator" : "normal"
+          }
+          color={
+            hovered ? "#e69f65" : tileData.indicator ? "#c76d44" : "#ecba85"
+          }
         />
       </mesh>
       {/* text */}
@@ -88,7 +96,11 @@ export default function Hexagon({ ...props }: HexagonProps) {
           <Text
             position={[0, 0, tileData.height / 2 + 0.25]}
             fontSize={0.5}
-            color="white"
+            color={
+              tileData.target === tileData.sees && tileData.height !== 0
+                ? "#7ddb8b"
+                : "white"
+            }
             anchorX="center"
             anchorY="middle"
             raycast={() => null}
