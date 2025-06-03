@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
 import Hexgrid from "../components/Hexgrid";
-import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
+import { OrbitControls, OrthographicCamera, PerspectiveCamera } from "@react-three/drei";
 import { useDispatch } from "react-redux";
 import { load } from "../features/levelSlice";
 import { levels } from "../data/data";
@@ -15,9 +15,14 @@ export default function GameScene() {
     <>
       <spotLight
         angle={0.75}
-        penumbra={1}
-        position={[0, 0, 8]}
-        intensity={100}
+        penumbra={0.5}
+        position={[0, 10, 10]}
+        intensity={150}
+      />
+      <ambientLight
+        intensity={1}
+
+        
       />
       <mesh rotation={[0, 0, 0]}>
         <Hexgrid />

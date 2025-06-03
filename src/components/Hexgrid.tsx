@@ -9,7 +9,7 @@ export default function Hexgrid(props: ThreeElements["mesh"]) {
   const tileIndexes = useSelector(selectIndexes);
   return (
     <>
-      <mesh>
+      <mesh {...props}>
         {tileIndexes.map((index) => {
           const [y, x] = axialToPixel(index);
           return <Hexagon key={nanoid()} coords={index} position={[x, y, 0]} />;

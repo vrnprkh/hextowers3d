@@ -1,11 +1,9 @@
 import { Canvas } from "@react-three/fiber";
 import "./App.css";
 import GameScene from "./scenes/GameScene";
-import { Provider, useDispatch } from "react-redux";
+import { Provider } from "react-redux";
 import { store } from "./app/store";
-import { useEffect } from "react";
-import { load } from "./features/levelSlice";
-import { levels } from "./data/data";
+
 
 function App() {
   return (
