@@ -42,6 +42,9 @@ export const uiSlice = createSlice({
         state.currentLevelIndex--;
       }
     },
+    setLevel: (state, action: PayloadAction<number>) => {
+      state.currentLevelIndex = action.payload;
+    },
     resetLevel: (state) => {
       state.currentLevelIndex = 0;
     },
@@ -72,7 +75,8 @@ export default uiSlice.reducer;
 
 export const { toggleSideBar } = uiSlice.actions;
 // selectors
-export const selectSidebarStatus = (state: RootState) => state.ui.sidebarVisible;
+export const selectSidebarStatus = (state: RootState) =>
+  state.ui.sidebarVisible;
 
 export const selectCurrentLevelIndex = (state: RootState) =>
   state.ui.currentLevelIndex;
@@ -134,6 +138,20 @@ export const goToPreviousLevel = createAsyncThunk(
       dispatch(uiSlice.actions.prevLevel());
       dispatch(load(levelSet[currentIndex - 1]));
     }
+  }
+);
+
+export const goToLevel = createAsyncThunk(
+  "ui/goToPrevLevel",
+  async (levelNum: number, { dispatch, getState }) => {
+    const state = getState() as RootState;
+
+    const selectedSize = state.ui.currentSize;
+    const selectedTower = state.ui.currentTowers;
+    const levelSet = await loadLevelSet(selectedSize, selectedTower);
+
+    dispatch(uiSlice.actions.setLevel(levelNum));
+    dispatch(load(levelSet[levelNum]));
   }
 );
 

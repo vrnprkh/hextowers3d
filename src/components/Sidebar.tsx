@@ -1,6 +1,7 @@
 import {
   changeCurrentTowers,
   changeEdgeSize,
+  goToLevel,
   goToNextLevel,
   goToPreviousLevel,
   selectCurrentEdge,
@@ -52,12 +53,11 @@ export default function Sidebar() {
   if (!sidebarVis) {
     return;
   }
-  
 
   return (
-    <div className="flex flex-col h-full bg-gray-800 p-2 gap-1 items-center overflow-x-scroll min-w-[250px]">
+    <div className="flex flex-col h-full bg-gray-800 p-2 gap-1 items-center overflow-x-scroll">
       <div className="flex text-white self-stretch text-nowrap justify-center p-1">
-        Size: {currentEdge} Towers: {currentTower} Level: {currentLevel + 1}/{levelCount}
+        {currentEdge}-{currentTower}-{currentLevel + 1}
       </div>
       {/* next and previous level */}
       <div className="flex self-stretch justify-center gap-1">
@@ -77,9 +77,9 @@ export default function Sidebar() {
         </SidebarButton>
       </div>
 
-      <div className="flex self-stretch justify-center gap-1  text-white  border-gray-500 border p-1">
+      <div className="grid grid-cols-3 gap-1 text-white border-gray-500 border p-1">
         {/* edge options */}
-        <div className="flex flex-col w-full gap-0.5">
+        <div className="flex flex-col gap-0.5">
           <div className="flex justify-center">Size</div>
           {currentEdgeOptions.map((e) => (
             <React.Fragment key={`edge-${e}`}>
@@ -95,7 +95,7 @@ export default function Sidebar() {
           ))}
         </div>
 
-        <div className="flex flex-col w-full gap-0.5">
+        <div className="flex flex-col gap-0.5">
           <div className="flex justify-center">Towers</div>
           {currentTowerOptions.map((e) => (
             <React.Fragment key={`edge-${e}`}>
@@ -106,6 +106,21 @@ export default function Sidebar() {
                 disabled={currentTower === e}
               >
                 {e}
+              </SidebarButton>
+            </React.Fragment>
+          ))}
+        </div>
+        <div className="flex flex-col gap-0.5">
+          <div className="flex justify-center">Level</div>
+          {[...Array(levelCount).keys()].map((e) => (
+            <React.Fragment key={`tower-${e}`}>
+              <SidebarButton
+                click={() => {
+                  dispatch(goToLevel(e));
+                }}
+                disabled={currentLevel === e}
+              >
+                {e + 1}
               </SidebarButton>
             </React.Fragment>
           ))}
