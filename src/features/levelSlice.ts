@@ -1,4 +1,4 @@
-import { createSlice, Tuple, type PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { LevelData } from "../data/data";
 import { modulo } from "../util/hexagonUtils";
 import type { RootState } from "../app/store";
