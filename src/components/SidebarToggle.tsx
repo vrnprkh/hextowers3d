@@ -4,7 +4,7 @@ import { toggleSideBar } from "../features/UISlice";
 export default function SidebarToggle() {
 	const dispatch = useDispatch();
   return (
-    <div>
+    <div className="absolute z-10">
       <button className="p-1 hover:bg-gray-500 rounded"
 			onClick={() => dispatch(toggleSideBar())}>
         <svg

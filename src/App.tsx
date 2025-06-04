@@ -9,9 +9,12 @@ function App() {
   return (
     <Provider store={store}>
       <div className="flex h-full">
-        <Sidebar/>
-        <SidebarToggle/>
-      
+        <Sidebar />
+        {/* div for relative posistioning */}
+        <div>
+          <SidebarToggle />
+        </div>
+
         <Canvas
           onContextMenu={(e) => {
             e.preventDefault();
