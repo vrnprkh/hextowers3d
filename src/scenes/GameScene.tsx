@@ -14,7 +14,7 @@ export default function GameScene() {
   return (
     <>
       <spotLight
-        angle={0.2}
+        angle={0.3}
         penumbra={1}
         position={[10, 10, 20]}
         intensity={350}

@@ -46,7 +46,7 @@ export default function Sidebar() {
   const levelCount = useSelector(selectTotalLevelCount);
   const win = useSelector(selectWin);
   return (
-    <div className="flex flex-col h-full bg-gray-800 p-2 gap-1 items-center">
+    <div className="flex flex-col h-full bg-gray-800 p-2 gap-1 items-center overflow-x-scroll min-w-[250px]">
       <div className="flex text-white self-stretch text-nowrap justify-center p-1">
         Size: {currentEdge} Towers: {currentTower} Level: {currentLevel + 1}/{levelCount}
       </div>
@@ -71,7 +71,7 @@ export default function Sidebar() {
       <div className="flex self-stretch justify-center gap-1  text-white  border-gray-500 border p-1">
         {/* edge options */}
         <div className="flex flex-col w-full gap-0.5">
-          <div className="flex justify-center">Edge</div>
+          <div className="flex justify-center">Size</div>
           {currentEdgeOptions.map((e) => (
             <React.Fragment key={`edge-${e}`}>
               <SidebarButton
