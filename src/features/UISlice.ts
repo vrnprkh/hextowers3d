@@ -14,6 +14,7 @@ export interface UIState {
 
   availibleSizes: number[];
   availibleTowers: number[]; // depends on sizes^
+  totalLevelCount: number;
 }
 
 const initialState: UIState = {
@@ -23,6 +24,7 @@ const initialState: UIState = {
   currentTowers: 4,
   availibleSizes: [],
   availibleTowers: [],
+  totalLevelCount: 0,
 };
 
 export const uiSlice = createSlice({
@@ -45,6 +47,9 @@ export const uiSlice = createSlice({
     },
     setCurrentTowers: (state, action: PayloadAction<number>) => {
       state.currentTowers = action.payload;
+    },
+    setTotalLevelCount: (state, action: PayloadAction<number>) => {
+      state.totalLevelCount = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -72,7 +77,8 @@ export const selectCurrentEdgeSizeOptions = (state: RootState) =>
   state.ui.availibleSizes;
 export const selectCurrentTowerOptions = (state: RootState) =>
   state.ui.availibleTowers;
-
+export const selectTotalLevelCount = (state: RootState) =>
+  state.ui.totalLevelCount;
 // thunks
 
 // data loading
@@ -137,6 +143,8 @@ export const startGame = createAsyncThunk(
     const selectedTower = towers[0];
 
     const levelsData = await loadLevelSet(selectedSize, selectedTower);
+    // update level count
+    dispatch(uiSlice.actions.setTotalLevelCount(levelsData.length));
 
     dispatch(load(levelsData[0]));
   }
@@ -159,7 +167,7 @@ export const changeEdgeSize = createAsyncThunk(
     const currentSize = state.ui.currentSize;
 
     const levelsData = await loadLevelSet(currentSize, selectedTower);
-
+    dispatch(uiSlice.actions.setTotalLevelCount(levelsData.length));
     dispatch(load(levelsData[0]));
   }
 );
@@ -175,6 +183,7 @@ export const changeCurrentTowers = createAsyncThunk(
     const currentSize = state.ui.currentSize;
 
     const levelsData = await loadLevelSet(currentSize, newTowerSize);
+    dispatch(uiSlice.actions.setTotalLevelCount(levelsData.length));
     dispatch(load(levelsData[0]));
   }
 );

@@ -8,6 +8,7 @@ import {
   selectCurrentLevelIndex,
   selectCurrentTower,
   selectCurrentTowerOptions,
+  selectTotalLevelCount,
 } from "../features/UISlice";
 import { useAppDispatch } from "../app/hooks";
 import { reset, selectWin } from "../features/levelSlice";
@@ -42,11 +43,12 @@ export default function Sidebar() {
   const currentTower = useSelector(selectCurrentTower);
   const currentEdgeOptions = useSelector(selectCurrentEdgeSizeOptions);
   const currentTowerOptions = useSelector(selectCurrentTowerOptions);
+  const levelCount = useSelector(selectTotalLevelCount);
   const win = useSelector(selectWin);
   return (
     <div className="flex flex-col h-full bg-gray-800 p-2 gap-1 items-center">
       <div className="flex text-white self-stretch text-nowrap justify-center p-1">
-        Size: {currentEdge} Towers: {currentTower} Level: {currentLevel}
+        Size: {currentEdge} Towers: {currentTower} Level: {currentLevel + 1}/{levelCount}
       </div>
       {/* next and previous level */}
       <div className="flex self-stretch justify-center gap-1">
@@ -72,9 +74,12 @@ export default function Sidebar() {
           <div className="flex justify-center">Edge</div>
           {currentEdgeOptions.map((e) => (
             <React.Fragment key={`edge-${e}`}>
-              <SidebarButton click={() => {
-                dispatch(changeEdgeSize(e));
-              }} disabled={currentEdge === e}>
+              <SidebarButton
+                click={() => {
+                  dispatch(changeEdgeSize(e));
+                }}
+                disabled={currentEdge === e}
+              >
                 {e}
               </SidebarButton>
             </React.Fragment>
@@ -85,9 +90,12 @@ export default function Sidebar() {
           <div className="flex justify-center">Towers</div>
           {currentTowerOptions.map((e) => (
             <React.Fragment key={`edge-${e}`}>
-              <SidebarButton click={() => {
-                dispatch(changeCurrentTowers(e))
-              }} disabled={currentTower === e}>
+              <SidebarButton
+                click={() => {
+                  dispatch(changeCurrentTowers(e));
+                }}
+                disabled={currentTower === e}
+              >
                 {e}
               </SidebarButton>
             </React.Fragment>
@@ -96,6 +104,7 @@ export default function Sidebar() {
         {/*  */}
       </div>
 
+      <span className="h-full" />
       {win && (
         <>
           <div className="text-white text-2xl font-bold">Win!</div>
