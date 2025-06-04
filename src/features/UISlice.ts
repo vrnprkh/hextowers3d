@@ -1,10 +1,9 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
-  getAvailableEdgeSizes,
-  getManifest,
-  loadLevelSet,
-  type LevelData,
-} from "../data/data";
+  createAsyncThunk,
+  createSlice,
+  type PayloadAction,
+} from "@reduxjs/toolkit";
+import { getAvailableEdgeSizes, getManifest, loadLevelSet } from "../data/data";
 import type { RootState } from "../app/store";
 import { load } from "./levelSlice";
 export interface UIState {
@@ -12,6 +11,7 @@ export interface UIState {
   currentLevelIndex: number;
   currentSize: number;
   currentTowers: number;
+
   availibleSizes: number[];
   availibleTowers: number[]; // depends on sizes^
 }
@@ -37,19 +37,42 @@ export const uiSlice = createSlice({
         state.currentLevelIndex--;
       }
     },
+    resetLevel: (state) => {
+      state.currentLevelIndex = 0;
+    },
+    setCurrentEdgeSize: (state, action: PayloadAction<number>) => {
+      state.currentSize = action.payload;
+    },
+    setCurrentTowers: (state, action: PayloadAction<number>) => {
+      state.currentTowers = action.payload;
+    },
   },
   extraReducers: (builder) => {
-    builder.addCase(loadEdgeSizeInfo.fulfilled, (state, action) => {
-      state.availibleSizes = action.payload;
-      state.currentSize = action.payload[0];
-    });
+    builder
+      .addCase(loadEdgeSizeInfo.fulfilled, (state, action) => {
+        state.availibleSizes = action.payload;
+        state.currentSize = action.payload[0];
+      })
+      .addCase(loadTowerInfo.fulfilled, (state, action) => {
+        state.availibleTowers = action.payload;
+        state.currentTowers = action.payload[0];
+      });
   },
 });
 
 export default uiSlice.reducer;
 
+// selectors
 export const selectCurrentLevelIndex = (state: RootState) =>
   state.ui.currentLevelIndex;
+
+export const selectCurrentEdge = (state: RootState) => state.ui.currentSize;
+export const selectCurrentTower = (state: RootState) => state.ui.currentTowers;
+export const selectCurrentEdgeSizeOptions = (state: RootState) =>
+  state.ui.availibleSizes;
+export const selectCurrentTowerOptions = (state: RootState) =>
+  state.ui.availibleTowers;
+
 // thunks
 
 // data loading
@@ -104,18 +127,54 @@ export const goToPreviousLevel = createAsyncThunk(
 
 export const startGame = createAsyncThunk(
   "ui/startGame",
-  async (_, { dispatch, getState }) => {
+  async (_, { dispatch }) => {
     const edgeSizeResult = await dispatch(loadEdgeSizeInfo());
     const sizes = edgeSizeResult.payload as number[];
     const selectedSize = sizes[0];
 
-    // Step 2: Load available towers for that edge size
     const towerResult = await dispatch(loadTowerInfo());
     const towers = towerResult.payload as number[];
     const selectedTower = towers[0];
 
     const levelsData = await loadLevelSet(selectedSize, selectedTower);
 
+    dispatch(load(levelsData[0]));
+  }
+);
+
+export const changeEdgeSize = createAsyncThunk(
+  "ui/changeEdgeSize",
+  async (newEdgeSize: number, { dispatch, getState }) => {
+    // set new edge size
+    dispatch(uiSlice.actions.resetLevel());
+    dispatch(uiSlice.actions.setCurrentEdgeSize(newEdgeSize));
+
+    // laod tower info using size from state
+    const towerResult = await dispatch(loadTowerInfo());
+    const towers = towerResult.payload as number[];
+    const selectedTower = towers[0];
+
+    // load new size
+    const state = getState() as RootState;
+    const currentSize = state.ui.currentSize;
+
+    const levelsData = await loadLevelSet(currentSize, selectedTower);
+
+    dispatch(load(levelsData[0]));
+  }
+);
+
+export const changeCurrentTowers = createAsyncThunk(
+  "ui/changeTowers",
+  async (newTowerSize: number, { dispatch, getState }) => {
+    // set new edge size
+    dispatch(uiSlice.actions.resetLevel());
+    dispatch(uiSlice.actions.setCurrentTowers(newTowerSize));
+    // load new size
+    const state = getState() as RootState;
+    const currentSize = state.ui.currentSize;
+
+    const levelsData = await loadLevelSet(currentSize, newTowerSize);
     dispatch(load(levelsData[0]));
   }
 );
