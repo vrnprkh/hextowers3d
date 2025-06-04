@@ -75,20 +75,19 @@ export default uiSlice.reducer;
 
 export const { toggleSideBar } = uiSlice.actions;
 // selectors
-export const selectSidebarStatus = (state: RootState) =>
-  state.ui.sidebarVisible;
 
-export const selectCurrentLevelIndex = (state: RootState) =>
-  state.ui.currentLevelIndex;
+export const selectSidebarUIInfo = (state: RootState) => {
+  return {
+    currentLevel: state.ui.currentLevelIndex,
+    currentEdge: state.ui.currentSize,
+    currentTower: state.ui.currentTowers,
+    currentEdgeOptions: state.ui.availibleSizes,
+    currentTowerOptions : state.ui.availibleTowers,
+    levelCount : state.ui.totalLevelCount,
+    sidebarVisible : state.ui.sidebarVisible,
+  };
+};
 
-export const selectCurrentEdge = (state: RootState) => state.ui.currentSize;
-export const selectCurrentTower = (state: RootState) => state.ui.currentTowers;
-export const selectCurrentEdgeSizeOptions = (state: RootState) =>
-  state.ui.availibleSizes;
-export const selectCurrentTowerOptions = (state: RootState) =>
-  state.ui.availibleTowers;
-export const selectTotalLevelCount = (state: RootState) =>
-  state.ui.totalLevelCount;
 // thunks
 
 // data loading

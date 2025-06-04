@@ -4,13 +4,7 @@ import {
   goToLevel,
   goToNextLevel,
   goToPreviousLevel,
-  selectCurrentEdge,
-  selectCurrentEdgeSizeOptions,
-  selectCurrentLevelIndex,
-  selectCurrentTower,
-  selectCurrentTowerOptions,
-  selectSidebarStatus,
-  selectTotalLevelCount,
+  selectSidebarUIInfo,
 } from "../features/UISlice";
 import { useAppDispatch } from "../app/hooks";
 import { reset, selectWin } from "../features/levelSlice";
@@ -39,18 +33,21 @@ function SidebarButton({
 }
 
 export default function Sidebar() {
+  // maybe move this into one selector lol
   const dispatch = useAppDispatch();
-  const currentLevel = useSelector(selectCurrentLevelIndex);
-  const currentEdge = useSelector(selectCurrentEdge);
-  const currentTower = useSelector(selectCurrentTower);
-  const currentEdgeOptions = useSelector(selectCurrentEdgeSizeOptions);
-  const currentTowerOptions = useSelector(selectCurrentTowerOptions);
-  const levelCount = useSelector(selectTotalLevelCount);
   const win = useSelector(selectWin);
 
-  const sidebarVis = useSelector(selectSidebarStatus);
+  const {
+    currentLevel,
+    currentEdge,
+    currentTower,
+    currentEdgeOptions,
+    currentTowerOptions,
+    levelCount,
+    sidebarVisible,
+  } = useSelector(selectSidebarUIInfo);
 
-  if (!sidebarVis) {
+  if (!sidebarVisible) {
     return;
   }
 
