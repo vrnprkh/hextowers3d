@@ -10,6 +10,7 @@ import {
   removeHover,
   selectTile,
 } from "../features/levelSlice";
+import { basicTheme } from "../util/threeTheme";
 
 type HexagonProps = ThreeElements["mesh"] & {
   coords: [number, number];
@@ -89,10 +90,10 @@ export default function Hexagon({ ...props }: HexagonProps) {
           }
           color={
             tileData.hovered
-              ? "#e69f65"
+              ? basicTheme.face.hovered
               : tileData.indicator
-              ? "#d98957"
-              : "#ecba85"
+              ? basicTheme.face.indicator
+              : basicTheme.face.normal
           }
         />
         <meshStandardMaterial
@@ -107,10 +108,10 @@ export default function Hexagon({ ...props }: HexagonProps) {
           }
           color={
             tileData.hovered
-              ? "#cc8d5a"
+              ? basicTheme.side.hovered
               : tileData.indicator
-              ? "#bf784d"
-              : "#d4a777"
+              ? basicTheme.side.indicator
+              : basicTheme.side.normal
           }
         />
       </mesh>
