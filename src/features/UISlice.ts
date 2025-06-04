@@ -1,5 +1,6 @@
 import {
   createAsyncThunk,
+  createSelector,
   createSlice,
   type PayloadAction,
 } from "@reduxjs/toolkit";
@@ -75,18 +76,22 @@ export default uiSlice.reducer;
 
 export const { toggleSideBar } = uiSlice.actions;
 // selectors
+const selectUI = (state: RootState) => state.ui;
 
-export const selectSidebarUIInfo = (state: RootState) => {
-  return {
-    currentLevel: state.ui.currentLevelIndex,
-    currentEdge: state.ui.currentSize,
-    currentTower: state.ui.currentTowers,
-    currentEdgeOptions: state.ui.availibleSizes,
-    currentTowerOptions : state.ui.availibleTowers,
-    levelCount : state.ui.totalLevelCount,
-    sidebarVisible : state.ui.sidebarVisible,
-  };
-};
+export const selectSidebarUIInfo = createSelector(
+  [selectUI],
+  (ui) => ({
+    currentLevel: ui.currentLevelIndex,
+    currentEdge: ui.currentSize,
+    currentTower: ui.currentTowers,
+    currentEdgeOptions: ui.availibleSizes,
+    currentTowerOptions: ui.availibleTowers,
+    levelCount: ui.totalLevelCount,
+    sidebarVisible: ui.sidebarVisible,
+  })
+);
+
+
 
 // thunks
 
