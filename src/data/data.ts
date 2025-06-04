@@ -24,7 +24,8 @@ const defaultLevels: LevelData[] = [
 
 // data loader
 export async function getManifest() {
-  const res = await fetch("/levelData/manifest.json");
+  const base = import.meta.env.BASE_URL
+  const res = await fetch(`${base}levelData/manifest.json`);
   if (!res.ok) throw new Error("Failed to load manifest");
   return res.json();
 }
@@ -43,7 +44,8 @@ export async function loadLevelSet(
   edgeSize: number,
   towerSize: number
 ): Promise<LevelData[]> {
-  const url = `levelData/edgeSize${edgeSize}/towersCombined${towerSize}.json`;
+  const base = import.meta.env.BASE_URL
+  const url = `${base}levelData/edgeSize${edgeSize}/towersCombined${towerSize}.json`;
 
   try {
     const response = await fetch(url);
