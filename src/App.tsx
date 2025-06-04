@@ -3,12 +3,14 @@ import GameScene from "./scenes/GameScene";
 import { Provider } from "react-redux";
 import { store } from "./app/store";
 import Sidebar from "./components/Sidebar";
+import SidebarToggle from "./components/SidebarToggle";
 
 function App() {
   return (
     <Provider store={store}>
       <div className="flex h-full">
         <Sidebar/>
+        <SidebarToggle/>
       
         <Canvas
           onContextMenu={(e) => {

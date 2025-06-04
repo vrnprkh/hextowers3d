@@ -8,6 +8,7 @@ import {
   selectCurrentLevelIndex,
   selectCurrentTower,
   selectCurrentTowerOptions,
+  selectSidebarStatus,
   selectTotalLevelCount,
 } from "../features/UISlice";
 import { useAppDispatch } from "../app/hooks";
@@ -45,6 +46,14 @@ export default function Sidebar() {
   const currentTowerOptions = useSelector(selectCurrentTowerOptions);
   const levelCount = useSelector(selectTotalLevelCount);
   const win = useSelector(selectWin);
+
+  const sidebarVis = useSelector(selectSidebarStatus);
+
+  if (!sidebarVis) {
+    return;
+  }
+  
+
   return (
     <div className="flex flex-col h-full bg-gray-800 p-2 gap-1 items-center overflow-x-scroll min-w-[250px]">
       <div className="flex text-white self-stretch text-nowrap justify-center p-1">

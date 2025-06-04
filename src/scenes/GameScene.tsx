@@ -36,8 +36,8 @@ export default function GameScene() {
         enablePan={false}
         minPolarAngle={0}
         maxPolarAngle={(3 * Math.PI) / 8}
-        minDistance={12}
-        maxDistance={20}
+        minDistance={10}
+        maxDistance={30}
       />
     </>
   );

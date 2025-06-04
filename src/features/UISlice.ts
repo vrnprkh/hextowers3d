@@ -31,6 +31,9 @@ export const uiSlice = createSlice({
   name: "ui",
   initialState,
   reducers: {
+    toggleSideBar: (state) => {
+      state.sidebarVisible = !state.sidebarVisible;
+    },
     nextLevel: (state) => {
       state.currentLevelIndex += 1;
     },
@@ -67,7 +70,10 @@ export const uiSlice = createSlice({
 
 export default uiSlice.reducer;
 
+export const { toggleSideBar } = uiSlice.actions;
 // selectors
+export const selectSidebarStatus = (state: RootState) => state.ui.sidebarVisible;
+
 export const selectCurrentLevelIndex = (state: RootState) =>
   state.ui.currentLevelIndex;
 
