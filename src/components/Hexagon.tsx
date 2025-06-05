@@ -10,17 +10,24 @@ import {
   removeHover,
   selectTile,
 } from "../features/levelSlice";
-import { basicTheme } from "../util/threeTheme";
+import {pancakeHovers, pancakeIndicators, pancakeNormals } from "../util/threeTheme";
 
-type HexagonProps = ThreeElements["mesh"] & {
+import * as THREE from "three";
+
+import { BufferGeometryUtils } from "three/examples/jsm/Addons.js";
+type HexagonProps = ThreeElements["object3D"] & {
   coords: [number, number];
 };
 
 export default function Hexagon({ ...props }: HexagonProps) {
   const bevelWidth = 0.1;
+  const layerHeight = 0.25;
+
   const coordString = `${props.coords[0]}-${props.coords[1]}`;
   const dispatch = useDispatch();
   const tileData = useSelector(selectTile(coordString));
+
+  const fullHeight = (tileData.height + 1) * (layerHeight + 2 * bevelWidth);
 
   const hexShape = useMemo(() => {
     const shape = new Shape();
@@ -38,8 +45,45 @@ export default function Hexagon({ ...props }: HexagonProps) {
     return shape;
   }, []);
 
+  const mergedGeometry = useMemo(() => {
+    const geometries: THREE.BufferGeometry[] = [];
+    let groupStart = 0;
+    const finalGeometry = new THREE.BufferGeometry();
+
+    for (let h = 0; h < tileData.height + 1; h++) {
+      const extrudeSettings = {
+        curveSegments: 1,
+        bevelSegments: 16,
+        bevelThickness: bevelWidth,
+        bevelSize: bevelWidth,
+        depth: layerHeight,
+      };
+
+      const geom = new THREE.ExtrudeGeometry(hexShape, extrudeSettings);
+      geom.translate(0, 0, h * (layerHeight + 2 * bevelWidth));
+
+      const count = geom.index
+        ? geom.index.count
+        : geom.getAttribute("position").count;
+
+      finalGeometry.addGroup(groupStart, count, h); // h = material index
+      groupStart += count;
+
+      geometries.push(geom);
+    }
+
+    const merged = BufferGeometryUtils.mergeGeometries(geometries, true);
+    if (!merged) {
+      console.error("mergeGeometries failed");
+      return finalGeometry;
+    }
+
+    finalGeometry.copy(merged);
+    return finalGeometry;
+  }, [hexShape, tileData.height]);
+
   return (
-    <mesh
+    <object3D
       {...props}
       onPointerEnter={(e) => {
         if (tileData.target !== -1) {
@@ -66,60 +110,27 @@ export default function Hexagon({ ...props }: HexagonProps) {
         e.stopPropagation();
       }}
     >
-      <mesh castShadow={true} receiveShadow={true}>
-        <extrudeGeometry
-          args={[
-            hexShape,
-            {
-              curveSegments: 1,
-              bevelSegments: 16,
-              bevelSize: bevelWidth,
-              depth: tileData.height / 2,
-            },
-          ]}
-        />
-        <meshStandardMaterial
-          attach="material-0"
-          key={
-            "face-" +
-            (tileData.hovered
-              ? "hovered"
-              : tileData.indicator
-              ? "indicator"
-              : "normal")
-          }
-          color={
-            tileData.hovered
-              ? basicTheme.face.hovered
-              : tileData.indicator
-              ? basicTheme.face.indicator
-              : basicTheme.face.normal
-          }
-        />
-        <meshStandardMaterial
-          attach="material-1"
-          key={
-            "side-" +
-            (tileData.hovered
-              ? "hovered"
-              : tileData.indicator
-              ? "indicator"
-              : "normal")
-          }
-          color={
-            tileData.hovered
-              ? basicTheme.side.hovered
-              : tileData.indicator
-              ? basicTheme.side.indicator
-              : basicTheme.side.normal
-          }
-        />
+      <mesh geometry={mergedGeometry} castShadow receiveShadow>
+        {Array.from({ length: tileData.height + 1 }, (_, i) => (
+          <meshStandardMaterial
+            key={`material-${i}`}
+            attach={`material-${i}`}
+            color={
+              tileData.hovered
+                ? pancakeHovers[i]
+                : tileData.indicator
+                ? pancakeIndicators[i]
+                : pancakeNormals[i]
+            }
+          />
+        ))}
       </mesh>
+
       {/* text */}
       {tileData.target !== -1 && (
         <>
           <Text
-            position={[0, 0, tileData.height / 2 + 0.25]}
+            position={[0, 0, fullHeight]}
             fontSize={0.5}
             color={
               tileData.target === tileData.sees && tileData.height !== 0
@@ -133,7 +144,7 @@ export default function Hexagon({ ...props }: HexagonProps) {
             {tileData.target}
           </Text>
           <Text
-            position={[0, -0.2, tileData.height / 2 + 0.25]}
+            position={[0, -0.2, fullHeight]}
             fontSize={0.5}
             color="white"
             anchorX="center"
@@ -144,6 +155,6 @@ export default function Hexagon({ ...props }: HexagonProps) {
           </Text>
         </>
       )}
-    </mesh>
+    </object3D>
   );
 }

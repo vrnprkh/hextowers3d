@@ -35,7 +35,8 @@ export default function GameScene() {
       <OrbitControls
         enablePan={false}
         minPolarAngle={0}
-        maxPolarAngle={(3 * Math.PI) / 8}
+        // maxPolarAngle={(3 * Math.PI) / 8}
+        maxPolarAngle={Math.PI/2}
         minDistance={10}
         maxDistance={30}
       />
