@@ -56,8 +56,8 @@ const RED_COLORS: { [key: string]: string } = {
   "950": "#360c05",
 };
 
-const colorNumbers = ["700", "500", "400", "300", "200"];
-const hoverColorNumbers = ["700", "500", "400", "300", "200"];
+const colorNumbers = ["600", "500", "400", "300", "200"];
+const hoverColorNumbers = ["600", "500", "400", "300", "200"];
 const indicatorColorNumbers = ["700", "600", "500", "400", "300"];
 
 export const pancakeNormals = colorNumbers.map((s) => YELLOW_COLORS[s]);

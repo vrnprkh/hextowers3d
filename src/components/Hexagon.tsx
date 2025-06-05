@@ -10,7 +10,11 @@ import {
   removeHover,
   selectTile,
 } from "../features/levelSlice";
-import {pancakeHovers, pancakeIndicators, pancakeNormals } from "../util/threeTheme";
+import {
+  pancakeHovers,
+  pancakeIndicators,
+  pancakeNormals,
+} from "../util/threeTheme";
 
 import * as THREE from "three";
 
