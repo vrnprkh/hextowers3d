@@ -12,7 +12,6 @@ export interface UIState {
   currentLevelIndex: number;
   currentSize: number;
   currentTowers: number;
-
   availibleSizes: number[];
   availibleTowers: number[]; // depends on sizes^
   totalLevelCount: number;
