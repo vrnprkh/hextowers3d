@@ -1,3 +1,6 @@
+# Play
+Currently at [https://www.vrnprkh.dev/hextowers3d](https://www.vrnprkh.dev/hextowers3d)
+
 # How to play
 
 ## Goal
